@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>电商图提示词生成工具</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="control-panel" aria-label="提示词控制台">
+        <div class="brand-block">
+          <p class="eyebrow">Marketplace image ops</p>
+          <h1>电商图提示词工作台</h1>
+          <p class="subcopy">把商品描述和原始商品图整理成可直接投喂 Image-2-Gen 的平台化图组提示词。</p>
+        </div>
+
+        <form id="prompt-form" class="input-stack">
+          <fieldset class="platform-switch">
+            <legend>平台</legend>
+            <label>
+              <input type="radio" name="platform" value="amazon" checked>
+              <span>Amazon</span>
+            </label>
+            <label>
+              <input type="radio" name="platform" value="ozon">
+              <span>Ozon</span>
+            </label>
+          </fieldset>
+
+          <div id="platform-banner" class="platform-banner"></div>
+
+          <label class="field">
+            <span>白话商品描述</span>
+            <textarea id="description" rows="6">一款便携式电动咖啡机，黑银配色，流线型设计，适合户外露营和居家使用。</textarea>
+          </label>
+
+          <div class="workflow-actions">
+            <button type="button" id="review-prompts" class="primary-action">生成提示词样式</button>
+            <button type="button" id="confirm-prompts" class="secondary-action" disabled>确认不再变动</button>
+          </div>
+
+          <label id="upload-step" class="upload-drop">
+            <input id="original-image" type="file" accept="image/png,image/jpeg,image/webp,image/tiff">
+            <span class="upload-icon" aria-hidden="true">+</span>
+            <span>
+              <strong>上传原始商品图</strong>
+              <small id="upload-name">用于 Image-to-Image 参考，建议白底清晰主图</small>
+            </span>
+          </label>
+          <div id="image-preview" class="image-preview" hidden>
+            <div class="preview-thumb">
+              <img id="preview-img" alt="">
+            </div>
+            <div class="preview-meta">
+              <strong id="preview-title">原始商品图</strong>
+              <span id="preview-detail">已作为产品形态参考</span>
+            </div>
+            <button type="button" id="clear-image" class="ghost-action preview-remove">移除</button>
+          </div>
+
+          <div class="button-row">
+            <button type="submit" id="generate-images" class="primary-action" disabled>正式开始生图</button>
+            <button type="button" id="copy-all" class="secondary-action">复制全部</button>
+          </div>
+        </form>
+
+        <section class="spec-panel" aria-label="Platform rules">
+          <div class="section-head">
+            <h2>当前平台规范</h2>
+            <button type="button" id="reset-spec" class="ghost-action compact-action">恢复默认</button>
+          </div>
+          <div id="platform-spec" class="spec-editor">
+            <label>
+              <span>比例</span>
+              <input id="spec-aspect-ratio" type="text">
+            </label>
+            <label>
+              <span>背景</span>
+              <textarea id="spec-background" rows="2"></textarea>
+            </label>
+            <label>
+              <span>尺寸</span>
+              <input id="spec-resolution" type="text">
+            </label>
+            <label>
+              <span>格式</span>
+              <input id="spec-format" type="text">
+            </label>
+            <label>
+              <span>图数</span>
+              <input id="spec-count" type="number" min="1" max="12">
+            </label>
+            <label class="wide-field">
+              <span>主图约束</span>
+              <textarea id="spec-main-prefix" rows="3"></textarea>
+            </label>
+            <label class="wide-field">
+              <span>通用风格</span>
+              <textarea id="spec-base-prompt" rows="3"></textarea>
+            </label>
+          </div>
+        </section>
+
+        <section class="edit-panel" aria-label="Single image edit prompt">
+          <div class="section-head">
+            <h2>单张编辑提示词</h2>
+            <span class="status-pill muted-pill">保持一致性</span>
+          </div>
+          <label class="field">
+            <span>选择图片</span>
+            <select id="edit-image"></select>
+          </label>
+          <label class="field">
+            <span>修改意图</span>
+            <textarea id="edit-intent" rows="4">把女性模特换成男性模特，并让场景看起来更冷一些。</textarea>
+          </label>
+          <button type="button" id="build-edit" class="secondary-action full-width">生成编辑提示词</button>
+          <textarea id="edit-output" class="prompt-output" rows="8" readonly></textarea>
+          <button type="button" id="copy-edit" class="ghost-action full-width">复制编辑提示词</button>
+        </section>
+      </section>
+
+      <section class="workspace" aria-live="polite">
+        <div class="workspace-head">
+          <div>
+            <p class="eyebrow">图组生产队列</p>
+            <h2 id="set-title">Amazon 图组</h2>
+          </div>
+          <div class="workspace-actions">
+            <span id="set-summary" class="summary-chip">7 张图</span>
+            <button type="button" id="download-json" class="secondary-action">导出 JSON</button>
+          </div>
+        </div>
+        <div id="reference-strip" class="reference-strip"></div>
+        <div id="prompt-list" class="prompt-list"></div>
+      </section>
+    </main>
+
+    <script src="./src/promptEngine.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
