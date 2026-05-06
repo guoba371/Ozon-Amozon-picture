@@ -40,6 +40,8 @@
   const copyEdit = document.querySelector("#copy-edit");
   const buildEdit = document.querySelector("#build-edit");
   const downloadJson = document.querySelector("#download-json");
+  const themeToggle = document.querySelector("#theme-toggle");
+  const themeLabel = themeToggle?.querySelector(".theme-label");
 
   let currentSet = null;
   let promptReview = null;
@@ -49,6 +51,27 @@
   let originalImageDataUrl = "";
   let previewUrl = "";
   let activePlatform = "";
+
+  const THEME_STORAGE_KEY = "image-studio-theme";
+
+  function preferredTheme() {
+    const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+    if (storedTheme === "dark" || storedTheme === "light") return storedTheme;
+    return window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+
+  function applyTheme(theme) {
+    const normalizedTheme = theme === "dark" ? "dark" : "light";
+    document.documentElement.dataset.theme = normalizedTheme;
+    if (themeToggle) {
+      const isDark = normalizedTheme === "dark";
+      themeToggle.setAttribute("aria-pressed", String(isDark));
+      themeToggle.setAttribute("aria-label", isDark ? "切换浅色模式" : "切换深色模式");
+    }
+    if (themeLabel) {
+      themeLabel.textContent = normalizedTheme === "dark" ? "浅色" : "深色";
+    }
+  }
 
   function selectedPlatform() {
     return new FormData(form).get("platform");
@@ -416,6 +439,10 @@
 
   form.addEventListener("change", (event) => {
     if (event.target === originalImageInput) return;
+    if (event.target.name === "platform") {
+      promptReview = null;
+      refreshPreviewSet();
+    }
     resetConfirmation();
   });
   descriptionInput.addEventListener("input", resetConfirmation);
@@ -510,6 +537,11 @@
 
   copyAll.addEventListener("click", () => copyText(allPromptText(), "已复制全部提示词"));
   copyEdit.addEventListener("click", () => copyText(editOutput.value, "已复制编辑提示词"));
+  themeToggle?.addEventListener("click", () => {
+    const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+    localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+    applyTheme(nextTheme);
+  });
 
   downloadJson.addEventListener("click", () => {
     const payload = {
@@ -530,6 +562,7 @@
     URL.revokeObjectURL(url);
   });
 
+  applyTheme(preferredTheme());
   loadDefaultSpec(selectedPlatform());
   originalImageInput.disabled = false;
   refreshPreviewSet();

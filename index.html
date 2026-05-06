@@ -7,14 +7,44 @@
     <link rel="stylesheet" href="./styles.css">
   </head>
   <body>
+    <header class="global-nav" aria-label="应用导航">
+      <a class="nav-mark" href="/">影像工作台</a>
+      <nav>
+        <a href="#prompt-form">提示词</a>
+        <a href="#platform-spec">规范</a>
+        <a href="#prompt-list">输出</a>
+        <button type="button" id="theme-toggle" class="theme-toggle" aria-label="切换深色模式" aria-pressed="false">
+          <span class="theme-icon" aria-hidden="true"></span>
+          <span class="theme-label">深色</span>
+        </button>
+      </nav>
+    </header>
     <main class="app-shell">
-      <section class="control-panel" aria-label="提示词控制台">
+      <section class="studio-hero" aria-label="产品影像工作台介绍">
         <div class="brand-block">
           <p class="eyebrow">Marketplace image ops</p>
           <h1>电商图提示词工作台</h1>
-          <p class="subcopy">把商品描述和原始商品图整理成可直接投喂 Image-2-Gen 的平台化图组提示词。</p>
+          <p class="subcopy">把商品描述、平台规范和原始商品图整理成可直接投喂 Image-2-Gen 的高一致性图组提示词。</p>
+          <div class="hero-actions" aria-label="工作流状态">
+            <span>Amazon / Ozon</span>
+            <span>图生图参考</span>
+            <span>批量提示词</span>
+          </div>
         </div>
+        <div class="cinema-panel" aria-hidden="true">
+          <div class="device-stage">
+            <div class="product-orbit"></div>
+            <div class="product-body">
+              <span class="product-lens"></span>
+              <span class="product-line"></span>
+            </div>
+            <div class="stage-shadow"></div>
+          </div>
+          <p>平台化商品图说明</p>
+        </div>
+      </section>
 
+      <section class="control-panel" aria-label="提示词控制台">
         <form id="prompt-form" class="input-stack">
           <fieldset class="platform-switch">
             <legend>平台</legend>
